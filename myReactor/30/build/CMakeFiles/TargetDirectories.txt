@@ -1,0 +1,3 @@
+/home/caizhao/Desktop/reactor/myreactor/30problem/build/CMakeFiles/echoServer.dir
+/home/caizhao/Desktop/reactor/myreactor/30problem/build/CMakeFiles/edit_cache.dir
+/home/caizhao/Desktop/reactor/myreactor/30problem/build/CMakeFiles/rebuild_cache.dir

@@ -1,0 +1,3 @@
+/home/caizhao/Desktop/reactor/myreactor/11/server/build/CMakeFiles/tcpepoll.dir
+/home/caizhao/Desktop/reactor/myreactor/11/server/build/CMakeFiles/edit_cache.dir
+/home/caizhao/Desktop/reactor/myreactor/11/server/build/CMakeFiles/rebuild_cache.dir

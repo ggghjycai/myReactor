@@ -1,0 +1,146 @@
+#include "Channel.h"
+#include "sys/socket.h"
+
+Channel::Channel(Epoll *ep, int fd) : ep_(ep), fd_(fd)
+{
+}
+
+Channel::~Channel()
+{
+}
+
+int Channel::fd()
+{
+    return fd_;
+}
+
+void Channel::useet()
+{
+    events_ = events_ | EPOLLET;
+}
+
+void Channel::enablereading()
+{
+    events_ = events_ | EPOLLIN;
+    ep_->updatechannel(this);
+}
+
+void Channel::setinepoll()
+{
+    inepoll_ = true;
+}
+
+void Channel::setrevents(uint32_t ev)
+{
+    revents_ = ev;
+}
+
+bool Channel::inepoll()
+{
+    return inepoll_;
+}
+
+uint32_t Channel::events()
+{
+    return events_;
+}
+
+uint32_t Channel::revents()
+{
+    return revents_;
+}
+
+
+void Channel::handleevents()
+{
+    if (this->revents_ & EPOLLRDHUP) // 对方已关闭，有些系统检测不到，可以使用EPOLLIN，recv()返回0。
+    {
+        printf("1 client(%d) close.\n", this->fd());
+        close(this->fd());
+        return;
+    }
+    else if (this->revents_ & (EPOLLIN | EPOLLPRI)) // 接收缓冲区中有数据可以读。
+    {
+        //if (this->islisten_ == true) // 如果是listenfd有事件，表示有新的客户端连上来。
+        // {
+        //     newconnection(servsock);
+        //     // 由于析构函数中会关闭socketfd,所以这里不能delete,并且也必须使用new 
+        // }
+        // else
+        // {
+        //      onmessage();
+        // } 
+
+        readcallback_();    
+    }
+    else if (this->revents_ & EPOLLOUT)
+    {
+        return;
+    }
+    else
+    {
+        printf("client(%d) error.\n", this->fd());
+        close(this->fd());
+        return;
+    }
+}
+
+// 处理新客户端连接请求
+void Channel::newconnection(Socket *servsock)
+{
+    InetAddress clientaddr;
+
+    Socket *clientsock = new Socket(servsock->accept(clientaddr));
+
+    printf("accept client(fd=%d,ip=%s,port=%d) ok.\n", clientsock->fd(), clientaddr.ip(), clientaddr.port());
+
+    // ep.addfd(clientsock->fd(),EPOLLIN|EPOLLET);//边缘触发
+
+    Channel *clientchannel = new Channel(this->ep_, clientsock->fd());
+    //为客户端的channel指定回调函数
+    clientchannel->setreadcallback(std::bind(&Channel::onmessage,clientchannel));
+    // 如果要使用边缘触发,那么下面两行顺序一定不能乱
+    clientchannel->useet();         // 开启边缘触发
+    clientchannel->enablereading(); // 开启读事
+    // 由于析构函数中会关闭socketfd,所以这里不能delete,并且也必须使用new
+}
+// 处理对端发送过来的消息
+void Channel::onmessage()
+{
+    char buffer[1024];
+    ssize_t readn = 0;
+    while (true)
+    {
+        /*
+        memset 是标准 C 库函数，而 bzero 是 BSD 库（Unix 系统）特有的函数。
+        虽然在功能上它们是等价的，但是由于 bzero 是特定于 BSD 的函数，在跨平台开发时可能不太适用。
+        通常建议使用 memset 来代替 bzero。
+        */
+        // memset(buffer, 0, sizeof(buffer));
+        bzero(buffer, sizeof(buffer));
+        readn = recv(this->fd(), buffer, sizeof(buffer), 0);
+        if (readn > 0)
+        {
+            // 把接收到的报文内容原封不动的发回去。
+            printf("recv(eventfd=%d):%s\n", this->fd(), buffer);
+            send(this->fd(), buffer, strlen(buffer), 0);
+        }
+        else if ((readn == -1) && (errno == EINTR)) // 读取数据的时候被信号中断，继续读取。
+            continue;
+        else if (readn == -1 && ((errno == EAGAIN) || (errno == EWOULDBLOCK))) // 全部的数据已读取完毕。
+        {
+            break;
+        }
+        else if (readn == 0) // 客户端连接已断开。
+        {
+            printf("2 client(%d) close.\n", this->fd());
+            close(this->fd());
+            break;
+        }
+    }
+}
+
+void Channel::setreadcallback(std::function<void()> func)
+{
+    readcallback_=func;
+}

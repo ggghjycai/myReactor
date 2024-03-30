@@ -1,1 +1,0 @@
-/usr/bin/c++ CMakeFiles/tcpepoll.dir/tcpepoll.cpp.o CMakeFiles/tcpepoll.dir/src/Channel.cpp.o CMakeFiles/tcpepoll.dir/src/Epoll.cpp.o CMakeFiles/tcpepoll.dir/src/EventLoop.cpp.o CMakeFiles/tcpepoll.dir/src/InetAddress.cpp.o CMakeFiles/tcpepoll.dir/src/Socket.cpp.o -o tcpepoll 

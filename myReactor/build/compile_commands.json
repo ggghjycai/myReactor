@@ -1,8 +1,0 @@
-[
-{
-  "directory": "/home/caizhao/Desktop/reactor/myreactor/build",
-  "command": "/usr/bin/g++   -g -std=gnu++11 -o CMakeFiles/client.dir/client.cpp.o -c /home/caizhao/Desktop/reactor/myreactor/02/client/client.cpp",
-  "file": "/home/caizhao/Desktop/reactor/myreactor/02/client/client.cpp",
-  "output": "CMakeFiles/client.dir/client.cpp.o"
-}
-]

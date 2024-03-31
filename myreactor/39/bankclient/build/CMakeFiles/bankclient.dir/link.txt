@@ -1,0 +1,1 @@
+/usr/bin/c++ CMakeFiles/bankclient.dir/client.cpp.o -o bankclient 

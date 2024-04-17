@@ -1,0 +1,3 @@
+/home/caizhao/Desktop/reactor/myreactor/39/bankclient/build/CMakeFiles/bankclient.dir
+/home/caizhao/Desktop/reactor/myreactor/39/bankclient/build/CMakeFiles/edit_cache.dir
+/home/caizhao/Desktop/reactor/myreactor/39/bankclient/build/CMakeFiles/rebuild_cache.dir

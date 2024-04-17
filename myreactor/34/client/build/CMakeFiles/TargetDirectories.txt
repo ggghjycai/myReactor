@@ -1,0 +1,3 @@
+/home/caizhao/Desktop/reactor/myreactor/34/client/build/CMakeFiles/client.dir
+/home/caizhao/Desktop/reactor/myreactor/34/client/build/CMakeFiles/edit_cache.dir
+/home/caizhao/Desktop/reactor/myreactor/34/client/build/CMakeFiles/rebuild_cache.dir
